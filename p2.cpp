@@ -1,4 +1,3 @@
-
 #include "p2.hpp"
 
 const int POSLEN = 20;
@@ -6,21 +5,24 @@ const int LINELEN = 120;
 int positions[POSLEN];
 int totStrings = 0;
 
-p2::p2(){
+p2::p2()
+{
     this->lengths = computeLengths("multiStrings.txt");
     // std::cout << "\t";
     directAccess("multiStrings.txt");
 }
 
-std::vector<int> p2::computeLengths(std::string file){
-    std::vector<int> len;    
+//Returns a vector of the lengths of each string found in file
+std::vector<int> p2::computeLengths(std::string file)
+{
+    std::vector<int> len;
     std::ifstream in;
     char line[LINELEN];
     in.open(file);
-        positions[0] = 0; 
-    while(in.getline(line, LINELEN))
+    positions[0] = 0;
+    while (in.getline(line, LINELEN))
     {
-        positions[totStrings] = strlen(line)+1;
+        positions[totStrings] = strlen(line) + 1;
         len.push_back(positions[totStrings++]);
         line[strlen(line)] = '\0';
         // std::cout << "string = [" << line << "]" << std::endl
@@ -29,6 +31,7 @@ std::vector<int> p2::computeLengths(std::string file){
     return len;
 }
 
+//Iteratest through the file, comparing each string to each other only once
 void p2::directAccess(std::string file)
 {
     std::string temp1, temp2;
@@ -38,19 +41,19 @@ void p2::directAccess(std::string file)
     in.open(file);
     in.seekg(currentPos);
     std::cout << "\t";
-    for(int i = 1; i < totStrings; i++)
+    for (int i = 1; i < totStrings; i++)
         std::cout << i << "\t";
     std::cout << std::endl;
-    for(i = 1; i < totStrings-1; i++)
+    for (i = 1; i < totStrings - 1; i++)
     {
         std::cout << i << "\t";
         in.getline(line, LINELEN);
-        line[strlen(line)] = '\0'; 
+        line[strlen(line)] = '\0';
         temp1 = line;
-        for(int q = i; q >= 1; q--)
-                std::cout << "-\t";
-        for(j = i+1; j < totStrings; j++)  
-        {	
+        for (int q = i; q >= 1; q--)
+            std::cout << "-\t";
+        for (j = i + 1; j < totStrings; j++)
+        {
             in.getline(line, LINELEN);
             line[strlen(line)] = '\0';
             temp2 = line;
@@ -63,8 +66,6 @@ void p2::directAccess(std::string file)
     }
 }
 
-
-
 // void p2::showPositionsArray()
 // {
 //   int i;
@@ -74,61 +75,75 @@ void p2::directAccess(std::string file)
 //   }
 // }
 
-char p2::calculateSimilarity(std::string s1, std::string s2){
+//Simply calculates the similarity begween a set of strings.
+//H - high similarity, M - medium similarity, L - low similarity, D - dissimilar
+char p2::calculateSimilarity(std::string s1, std::string s2)
+{
     float greater, lower;
-    if(s1.length() > s2.length()){
+    if (s1.length() > s2.length())
+    {
         greater = (float)s1.length();
         lower = (float)s2.length();
     }
-    else{
+    else
+    {
         greater = (float)s2.length();
         lower = (float)s1.length();
     }
-    if(lower / greater * 100 >= 90 && (float)LCM(s1, s2) / lower * 100 >= 90){
+    if (lower / greater * 100 >= 90 && (float)LCM(s1, s2) / lower * 100 >= 90)
+    {
         return 'H';
     }
-    else if(lower / greater * 100 >= 80 && (float)LCM(s1, s2) / lower * 100 >= 80){
+    else if (lower / greater * 100 >= 80 && (float)LCM(s1, s2) / lower * 100 >= 80)
+    {
         return 'M';
     }
-    else if(lower / greater * 100 >= 60 && (float)LCM(s1, s2) / lower * 100 >= 50){
+    else if (lower / greater * 100 >= 60 && (float)LCM(s1, s2) / lower * 100 >= 50)
+    {
         return 'L';
     }
     else
         return 'D';
 }
 
-int p2::LCM(std::string s1, std::string s2){
+//returns the LCM length of two strings
+int p2::LCM(std::string s1, std::string s2)
+{
     // int **c = new int*[2];
     std::string greatest, lowest;
     int lowLen, greLen, temp = 0;
 
-    if(s1.length() > s2.length()){
+    if (s1.length() > s2.length())
+    {
         lowest = s2;
         lowLen = s2.length();
         greLen = s1.length();
         greatest = s1;
     }
-    else if(s2.length() > s1.length()){
+    else if (s2.length() > s1.length())
+    {
         lowest = s1;
         lowLen = s1.length();
         greLen = s2.length();
         greatest = s2;
     }
-    else if(s2.length() == s2.length()){
+    else if (s2.length() == s2.length())
+    {
         lowest = s1;
         lowLen = s2.length() - 1;
         greLen = s1.length() - 1;
         greatest = s2;
         temp = 1;
     }
-    int c[2][greLen +1];
+    int c[2][greLen + 1];
 
     for (int i = 0; i <= greLen; i++)
         c[0][i] = 0;
     for (int i = 0; i <= lowLen; i++)
         c[1][i] = 0;
 
-    for(int lol = 1; lol <= greLen; lol++){
+    for (int lol = 1; lol <= greLen; lol++)
+    {
         for (int i = 1; i <= 2; i++)
         {
             for (int j = 1; j <= lowLen; j++)
@@ -142,17 +157,20 @@ int p2::LCM(std::string s1, std::string s2){
                 }
                 else
                 {
-                    if (c[i - 1][j] >= c[i][j - 1]){
+                    if (c[i - 1][j] >= c[i][j - 1])
+                    {
                         c[i][j] = c[i - 1][j];
                         // std::cout << "\t c = " << c[i][j] << "\tc[i - 1][j] " << c[i - 1][j] << std::endl;
                     }
-                    else{
+                    else
+                    {
                         c[i][j] = c[i][j - 1];
                     }
                 }
             }
         }
-        for(int i = 0; i < greLen; i++){
+        for (int i = 0; i < greLen; i++)
+        {
             c[0][i] = c[1][i];
         }
     }
