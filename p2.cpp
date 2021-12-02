@@ -9,8 +9,7 @@ int totStrings = 0;
 p2::p2(){
     this->lengths = computeLengths("multiStrings.txt");
     // std::cout << "\t";
-    std::cout << LCM("123456789012345", "123456789012345");
-    // directAccess("multiStrings.txt");
+    directAccess("multiStrings.txt");
 }
 
 std::vector<int> p2::computeLengths(std::string file){
@@ -24,7 +23,7 @@ std::vector<int> p2::computeLengths(std::string file){
         positions[totStrings] = strlen(line)+1;
         len.push_back(positions[totStrings++]);
         line[strlen(line)] = '\0';
-        // std::cout << "string = [" << line << "]" << std::endl;
+        // std::cout << "string = [" << line << "]" << std::endl
     }
     in.close();
     return len;
@@ -38,17 +37,24 @@ void p2::directAccess(std::string file)
     std::ifstream in;
     in.open(file);
     in.seekg(currentPos);
+    std::cout << "\t";
+    for(int i = 1; i < totStrings; i++)
+        std::cout << i << "\t";
+    std::cout << std::endl;
     for(i = 1; i < totStrings-1; i++)
     {
+        std::cout << i << "\t";
         in.getline(line, LINELEN);
         line[strlen(line)] = '\0'; 
         temp1 = line;
+        for(int q = i; q >= 1; q--)
+                std::cout << "-\t";
         for(j = i+1; j < totStrings; j++)  
         {	
             in.getline(line, LINELEN);
             line[strlen(line)] = '\0';
             temp2 = line;
-            std::cout << temp1 << "\t" << temp2 << std::endl;
+            // std::cout << temp1 << "\t" << temp2 << std::endl;
             std::cout << calculateSimilarity(temp1, temp2) << "\t";
         }
         std::cout << std::endl;
@@ -59,14 +65,14 @@ void p2::directAccess(std::string file)
 
 
 
-void p2::showPositionsArray()
-{
-  int i;
-  for(i = 0; i < totStrings; i++)
-  {
-    std::cout << " line " << i << " position " << positions[i] << std::endl;
-  }
-}
+// void p2::showPositionsArray()
+// {
+//   int i;
+//   for(i = 0; i < totStrings; i++)
+//   {
+//     std::cout << " line " << i << " position " << positions[i] << std::endl;
+//   }
+// }
 
 char p2::calculateSimilarity(std::string s1, std::string s2){
     float greater, lower;
@@ -92,7 +98,7 @@ char p2::calculateSimilarity(std::string s1, std::string s2){
 }
 
 int p2::LCM(std::string s1, std::string s2){
-    int **c = new int*[2];
+    // int **c = new int*[2];
     std::string greatest, lowest;
     int lowLen, greLen, temp = 0;
 
@@ -115,8 +121,7 @@ int p2::LCM(std::string s1, std::string s2){
         greatest = s2;
         temp = 1;
     }
-    c[0] = new int[greLen + 1];
-    c[1] = new int[greLen + 1];
+    int c[2][greLen +1];
 
     for (int i = 0; i <= greLen; i++)
         c[0][i] = 0;
@@ -138,16 +143,18 @@ int p2::LCM(std::string s1, std::string s2){
                 else
                 {
                     if (c[i - 1][j] >= c[i][j - 1]){
-                        // c[i][j] = c[i - 1][j];
+                        c[i][j] = c[i - 1][j];
                         // std::cout << "\t c = " << c[i][j] << "\tc[i - 1][j] " << c[i - 1][j] << std::endl;
                     }
                     else{
-                        // c[i][j] = c[i][j - 1];
+                        c[i][j] = c[i][j - 1];
                     }
                 }
             }
         }
-        c[0] = c[1];
+        for(int i = 0; i < greLen; i++){
+            c[0][i] = c[1][i];
+        }
     }
     // std::cout << std::endl;
     // for (int i = 0; i < 2; i++){
