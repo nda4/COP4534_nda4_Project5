@@ -1,3 +1,5 @@
 make:
-	g++ dAccess.cpp p1.cpp main.cpp
+	g++ p1.cpp p2.hpp p2.cpp main.cpp
 	./a.out
+
+	
